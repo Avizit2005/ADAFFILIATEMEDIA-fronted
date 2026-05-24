@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import Auth from "./pages/Auth.jsx";
-import AdminDashboard from "./pages/AdminDashboard.jsx";
-import WorkerDashboard from "./pages/WorkerDashboard.jsx";
+import Auth from "./Auth.jsx";
+import AdminDashboard from "./AdminDashboard.jsx";
+import WorkerDashboard from "./WorkerDashboard.jsx";
 
 export default function App() {
   const [user, setUser] = useState(null);

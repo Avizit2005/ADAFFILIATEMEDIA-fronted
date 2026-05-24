@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
-import { api } from "../utils/api.js";
-import { GlobalStyles, Sidebar, useToast, StatCard } from "../components/Layout.jsx";
-import Badge from "../components/Badge.jsx";
+import { api } from "./api.js";
+import { GlobalStyles, Sidebar, useToast, StatCard } from "./Layout.jsx";
+import Badge from "./Badge.jsx";
 
 const OFFERS = [
   { id:"1", name:"Rent To Own Gateway",              payout:1.0,  link:"https://getownrenthomeus.netlify.app/" },

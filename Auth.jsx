@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { api } from "../utils/api.js";
+import { api } from "./api.js";
 
 const authCss = `
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap');
