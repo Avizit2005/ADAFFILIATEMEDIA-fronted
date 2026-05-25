@@ -4,15 +4,7 @@ import { GlobalStyles, Sidebar, useToast, StatCard } from "./Layout.jsx";
 import Badge from "./Badge.jsx";
 import { generateInvoice } from "./invoice.js";
 
-const OFFERS = [
-  { id:"1",name:"Rent To Own Gateway",payout:1.0,link:"https://getownrenthomeus.netlify.app/",category:"CPA" },
-  { id:"2",name:"Rent2Own",payout:1.3,link:"https://renttoownhomeus.netlify.app/",category:"CPA" },
-  { id:"3",name:"CreditScoreIQ - $1 7 Day Trial",payout:15.0,link:"https://creditscore1dollar.netlify.app/",category:"CPA" },
-  { id:"4",name:"TransUnion Credit Scores Trial",payout:30.0,link:"https://transunionscore.netlify.app/",category:"CPA" },
-  { id:"5",name:"Win a $1000 Amazon Gift Card",payout:1.0,link:"https://amazonreward998.netlify.app/",category:"CPA" },
-  { id:"6",name:"Cash App Gift Card",payout:1.3,link:"https://cashappreward664.netlify.app/",category:"CPA" },
-  { id:"7",name:"FlexJobs Work Opportunities (Remote Job)",payout:3.0,link:"https://usremoteflexjob.netlify.app/",category:"CPA" },
-];
+// offers loaded from API
 
 const SMARTLINKS = [
   { id:"sl1",name:"General Smartlink",description:"Auto-optimized — routes to best converting offer" },
@@ -28,12 +20,13 @@ export default function WorkerDashboard({ user, onLogout }) {
   const [leads, setLeads] = useState([]);
   const [withdrawals, setWithdrawals] = useState([]);
   const [customLinks, setCustomLinks] = useState([]);
+  const [offers, setOffers] = useState([]);
   const { showToast, ToastEl } = useToast();
 
   const loadData = useCallback(async () => {
     try {
-      const [me, l, wd, cl] = await Promise.all([api.get("/api/workers/me"), api.get("/api/leads/mine"), api.get("/api/withdrawals/mine"), api.get("/api/workerlinks/mine")]);
-      setCustomLinks(cl);
+      const [me, l, wd, cl, offData] = await Promise.all([api.get("/api/workers/me"), api.get("/api/leads/mine"), api.get("/api/withdrawals/mine"), api.get("/api/workerlinks/mine"), api.get("/api/offers")]);
+      setCustomLinks(cl); setOffers(offData || []);
       setWorker(me); setLeads(l); setWithdrawals(wd);
     } catch(e) {}
   }, []);
@@ -96,12 +89,12 @@ export default function WorkerDashboard({ user, onLogout }) {
             <>
               <div className="page-header"><div className="page-title">CPA Offers</div><div className="page-sub">Earn per qualified lead. Custom link থাকলে সেটাই দেখাবে।</div></div>
               <div className="offers-grid">
-                {OFFERS.map((o,i) => {
+                {offers.map((o,i) => {
                   const custom = customLinks.find(cl => cl.offerId === o.id);
                   const activeLink = custom ? custom.customLink : o.link;
                   const hasCustom = !!custom;
                   return (
-                    <div className="offer-card" key={o.id} style={{ animationDelay:`${i*.06}s` }}>
+                    <div className="offer-card" key={o.offerId} style={{ animationDelay:`${i*.06}s` }}>
                       <div style={{ display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10 }}>
                         <Badge type="info">{o.category}</Badge>
                         {hasCustom
@@ -119,7 +112,7 @@ export default function WorkerDashboard({ user, onLogout }) {
                       )}
                       <div style={{ fontSize:11,color:"#4d6a99",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",marginBottom:14 }}>{activeLink}</div>
                       <div style={{ display:"flex",gap:8 }}>
-                        <button onClick={()=>copyText(`${activeLink}${activeLink.includes("?")?"&":"?"}click_id=${worker.workerId}_${Date.now()}&aff=${worker.workerId}&offer=${o.id}`,"Tracking link copied!")} style={{ flex:1,padding:"7px 12px",background:hasCustom?"rgba(0,214,143,.1)":"rgba(26,107,255,.1)",border:`1px solid ${hasCustom?"rgba(0,214,143,.3)":"rgba(26,107,255,.3)"}`,borderRadius:6,color:hasCustom?"#00d68f":"#1a6bff",fontSize:11,fontWeight:600,cursor:"pointer",transition:"all .2s" }}>
+                        <button onClick={()=>copyText(`${activeLink}${activeLink.includes("?")?"&":"?"}click_id=${worker.workerId}_${Date.now()}&aff=${worker.workerId}&offer=${o.offerId}`,"Tracking link copied!")} style={{ flex:1,padding:"7px 12px",background:hasCustom?"rgba(0,214,143,.1)":"rgba(26,107,255,.1)",border:`1px solid ${hasCustom?"rgba(0,214,143,.3)":"rgba(26,107,255,.3)"}`,borderRadius:6,color:hasCustom?"#00d68f":"#1a6bff",fontSize:11,fontWeight:600,cursor:"pointer",transition:"all .2s" }}>
                           📋 Copy Tracking Link
                         </button>
                         <a href={activeLink} target="_blank" rel="noreferrer"><button style={{ padding:"7px 12px",background:"rgba(26,107,255,.1)",border:"1px solid rgba(26,107,255,.3)",borderRadius:6,color:"#1a6bff",fontSize:13,cursor:"pointer" }}>↗</button></a>

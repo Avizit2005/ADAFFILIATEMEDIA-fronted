@@ -73,6 +73,7 @@ export default function Auth({ onLogin }) {
           <>
             <div style={{ marginBottom:16 }}><label style={s.label}>Email Address</label><input style={s.inp} type="email" placeholder="worker@email.com" value={form.email} onChange={e=>set("email",e.target.value)} /></div>
             <div style={{ marginBottom:16 }}><label style={s.label}>Password</label><input style={s.inp} type="password" placeholder="••••••••" value={form.password} onChange={e=>set("password",e.target.value)} onKeyDown={e=>e.key==="Enter"&&doLogin()} /></div>
+            <div style={{ fontSize:11,color:"#4d6a99",marginBottom:12 }}>Demo Admin: admin@adaff.com / admin123</div>
           </>
         ) : (
           <>
